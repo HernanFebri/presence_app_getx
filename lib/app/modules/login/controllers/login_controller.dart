@@ -4,26 +4,29 @@ import 'package:get/get.dart';
 import 'package:presence_app_getx/app/routes/app_pages.dart';
 
 class LoginController extends GetxController {
+  RxBool isLoading = false.obs;
   TextEditingController emailC = TextEditingController();
   TextEditingController passC = TextEditingController();
 
   FirebaseAuth auth = FirebaseAuth.instance;
 
-  void login() async {
+  Future<void> login() async {
     if (emailC.text.isNotEmpty && passC.text.isNotEmpty) {
+      isLoading.value = true;
       try {
-        print("Attempting to sign in with email: ${emailC.text}");
-
         UserCredential userCredential = await auth.signInWithEmailAndPassword(
-          email: emailC.text.trim(),
+          email: emailC.text,
           password: passC.text,
         );
 
-        print("User credential: $userCredential");
-
         if (userCredential.user != null) {
-          if (userCredential.user!.emailVerified) {
-            Get.offAllNamed(Routes.HOME);
+          if (userCredential.user!.emailVerified == true) {
+            isLoading.value = false;
+            if (passC.text == "password") {
+              Get.offAllNamed(Routes.NEW_PASSWORD);
+            } else {
+              Get.offAllNamed(Routes.HOME);
+            }
           } else {
             Get.defaultDialog(
               title: "Belum Verifikasi",
@@ -31,7 +34,10 @@ class LoginController extends GetxController {
                   "Kamu belum verifikasi akun ini. Lakukan verifikasi email kamu.",
               actions: [
                 OutlinedButton(
-                  onPressed: () => Get.back(),
+                  onPressed: () {
+                    isLoading.value = false;
+                    Get.back();
+                  },
                   child: const Text("CANCEL"),
                 ),
                 ElevatedButton(
@@ -41,7 +47,9 @@ class LoginController extends GetxController {
                       Get.back();
                       Get.snackbar("Berhasil",
                           "Kami telah berhasil mengirim email verifikasi ke akun kamu.");
+                      isLoading.value = false;
                     } catch (e) {
+                      isLoading.value = false;
                       Get.snackbar("Terjadi Kesalahan",
                           "Tidak dapat mengirim email verifikasi. Hubungi admin atau customer service!");
                     }
@@ -52,18 +60,20 @@ class LoginController extends GetxController {
             );
           }
         }
+        isLoading.value = false;
       } on FirebaseAuthException catch (e) {
-        print("Firebase Auth Exception: ${e.code}"); // Tambahkan ini
+        isLoading.value = false;
         if (e.code == 'user-not-found') {
           Get.snackbar("Terjadi Kesalahan", "Email tidak terdaftar");
         } else if (e.code == 'wrong-password') {
           Get.snackbar("Terjadi Kesalahan", "Password salah");
         } else {
-          Get.snackbar(
-              "Terjadi Kesalahan", "Kesalahan tidak terduga: ${e.message}");
+          Get.snackbar("Terjadi Kesalahan",
+              "Login gagal. Periksa kembali email dan password anda !"); // For other errors
         }
       } catch (e) {
-        Get.snackbar("Terjadi Kesalahan", "Tidak dapat login: $e");
+        isLoading.value = false;
+        Get.snackbar("Terjadi Kesalahan", "Tidak dapat login");
       }
     } else {
       Get.snackbar("Terjadi Kesalahan", "Email dan password wajib diisi");
