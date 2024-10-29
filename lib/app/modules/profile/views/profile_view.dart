@@ -19,7 +19,7 @@ class ProfileView extends GetView<ProfileController> {
         stream: controller.streamUser(),
         builder: (context, snap) {
           if (snap.connectionState == ConnectionState.waiting) {
-            const Center(
+            return const Center(
               child: CircularProgressIndicator(),
             );
           }
@@ -32,11 +32,16 @@ class ProfileView extends GetView<ProfileController> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     ClipOval(
-                      child: Container(
+                      child: SizedBox(
                         width: 100,
                         height: 100,
                         child: Image.network(
                           "https://ui-avatars.com/api/?name=${user['name']}",
+                          errorBuilder: (context, error, stackTrace) {
+                            return CircleAvatar(
+                              child: Text("${user['name']}"),
+                            );
+                          },
                           fit: BoxFit.cover,
                         ),
                       ),
