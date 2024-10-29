@@ -16,10 +16,9 @@ class HomeView extends GetView<HomeController> {
         centerTitle: true,
         actions: [
           IconButton(
-              onPressed: () => Get.toNamed(Routes.ADD_PEGAWAI),
-              icon: const Icon(
-                Icons.person,
-              ))
+            onPressed: () => Get.toNamed(Routes.PROFILE),
+            icon: const Icon(Icons.person),
+          )
         ],
       ),
       body: const Center(
