@@ -25,6 +25,8 @@ class ProfileView extends GetView<ProfileController> {
           }
           if (snap.hasData) {
             Map<String, dynamic> user = snap.data!.data()!;
+            String defaultImage =
+                "https://ui-avatars.com/api/?name=${user['name']}";
             return ListView(
               padding: const EdgeInsets.all(20),
               children: [
@@ -36,7 +38,11 @@ class ProfileView extends GetView<ProfileController> {
                         width: 100,
                         height: 100,
                         child: Image.network(
-                          "https://ui-avatars.com/api/?name=${user['name']}",
+                          user["profile"] != null
+                              ? user["profile"] != ""
+                                  ? user["profile"]
+                                  : defaultImage
+                              : defaultImage,
                           errorBuilder: (context, error, stackTrace) {
                             return CircleAvatar(
                               child: Text("${user['name']}"),

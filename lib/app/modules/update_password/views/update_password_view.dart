@@ -19,7 +19,7 @@ class UpdatePasswordView extends GetView<UpdatePasswordController> {
           TextField(
             controller: controller.currC,
             obscureText: true,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               labelText: "Current Password",
               border: OutlineInputBorder(),
             ),
@@ -30,7 +30,7 @@ class UpdatePasswordView extends GetView<UpdatePasswordController> {
           TextField(
             controller: controller.newC,
             obscureText: true,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               labelText: "New Password",
               border: OutlineInputBorder(),
             ),
@@ -41,7 +41,7 @@ class UpdatePasswordView extends GetView<UpdatePasswordController> {
           TextField(
             controller: controller.confirmC,
             obscureText: true,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               labelText: "Confirm Password",
               border: OutlineInputBorder(),
             ),
