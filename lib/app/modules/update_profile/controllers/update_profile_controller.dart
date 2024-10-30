@@ -21,13 +21,7 @@ class UpdateProfileController extends GetxController {
 
   void pickImage() async {
     image = await picker.pickImage(source: ImageSource.gallery);
-    if (image != null) {
-      print(image!.name);
-      print(image!.name.split(".").last);
-      print(image!.path);
-    } else {
-      print(image);
-    }
+
     update();
   }
 
@@ -49,12 +43,29 @@ class UpdateProfileController extends GetxController {
           data.addAll({"profile": urlImage});
         }
         await firestore.collection("pegawai").doc(uid).update(data);
+        image = null;
         Get.snackbar("Berhasil", "Berhasil update profile.");
       } catch (e) {
         Get.snackbar("Terjadi Kesalahan", "Tidak dapat update profile.");
       } finally {
         isLoading.value = false;
       }
+    }
+  }
+
+  void deleteProfile(String uid) async {
+    try {
+      await firestore
+          .collection("pegawai")
+          .doc(uid)
+          .update({"profile": FieldValue.delete()});
+
+      Get.back();
+      Get.snackbar("Berhasil", "Berhasil delete photo profile.");
+    } catch (e) {
+      Get.snackbar("Terjadi Kesalahan", "Tidak dapat delete photo profile.");
+    } finally {
+      update();
     }
   }
 }
