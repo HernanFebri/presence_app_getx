@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:intl/intl.dart';
 import 'package:presence_app_getx/app/routes/app_pages.dart';
 
 class PageIndexController extends GetxController {
@@ -19,14 +20,21 @@ class PageIndexController extends GetxController {
         Map<String, dynamic> dataResponse = await determinePosition();
         if (dataResponse["error"] != true) {
           Position position = dataResponse["position"];
-
+          // LOKASI SAAT INI
           List<Placemark> placemarks = await placemarkFromCoordinates(
               position.latitude, position.longitude);
           String address =
               "${placemarks[0].name},${placemarks[0].subLocality}, ${placemarks[0].locality}";
           await updatePosition(position, address);
 
-          Get.snackbar("${dataResponse["message"]}", address);
+          // CEK DISTANCE BETWEEN 2 POSITION
+          double distance = Geolocator.distanceBetween(
+              -7.4225535, 109.2214741, position.latitude, position.longitude);
+
+          //PRESENSI
+          await presensi(position, address, distance);
+
+          Get.snackbar("Berhasil", "Kamu telah mengisi daftar hadir");
         } else {
           Get.snackbar("Terjadi Kesalahan", dataResponse["message"]);
         }
@@ -41,6 +49,77 @@ class PageIndexController extends GetxController {
       default:
         pageIndex.value = i;
         Get.offAllNamed(Routes.HOME);
+    }
+  }
+
+  Future<void> presensi(
+      Position position, String address, double distance) async {
+    String uid = await auth.currentUser!.uid;
+
+    CollectionReference<Map<String, dynamic>> colPresence =
+        await firestore.collection("pegawai").doc(uid).collection("presence");
+
+    QuerySnapshot<Map<String, dynamic>> snapPresence = await colPresence.get();
+
+    DateTime now = DateTime.now();
+    String todayDocID = DateFormat.yMd().format(now).replaceAll("/", "-");
+
+    String status = "Di Luar Area";
+
+    if (distance <= 50) {
+      // didalam area
+      status = "Di Dalam Area";
+    }
+
+    if (snapPresence.docs.length == 0) {
+      // belum pernah absen & set absen masuk
+      await colPresence.doc(todayDocID).set({
+        "date": now.toIso8601String(),
+        "masuk": {
+          "date": now.toIso8601String(),
+          "lat": position.latitude,
+          "long": position.longitude,
+          "address": address,
+          "status": status,
+        }
+      });
+    } else {
+      // sudah pernah absen => cek hari ini udah absen masuk/keluar belum?
+      DocumentSnapshot<Map<String, dynamic>> todayDoc =
+          await colPresence.doc(todayDocID).get();
+
+      if (todayDoc.exists == true) {
+        // tinggal absen keluar atau sudah absen masuk dan keluar
+        Map<String, dynamic>? dataPresenceToday = todayDoc.data();
+        if (dataPresenceToday?["keluar"] != null) {
+          // sudah absen masuk dan keluar
+          Get.snackbar("Sukses",
+              "Kamu telah absen masuk dan keluar. Kamu tidak dapat absen kembali.");
+        } else {
+          // absen keluar
+          await colPresence.doc(todayDocID).update({
+            "keluar": {
+              "date": now.toIso8601String(),
+              "lat": position.latitude,
+              "long": position.longitude,
+              "address": address,
+              "status": status,
+            }
+          });
+        }
+      } else {
+        // absen masuk
+        await colPresence.doc(todayDocID).set({
+          "date": now.toIso8601String(),
+          "masuk": {
+            "date": now.toIso8601String(),
+            "lat": position.latitude,
+            "long": position.longitude,
+            "address": address,
+            "status": status,
+          }
+        });
+      }
     }
   }
 
