@@ -63,9 +63,15 @@ class HomeView extends GetView<HomeController> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        Text(user["position"] != null
-                            ? "${user["position"]}"
-                            : "Belum ada lokasi."),
+                        Container(
+                          width: 200,
+                          child: Text(
+                            user["address"] != null
+                                ? "${user["address"]}"
+                                : "Belum ada lokasi.",
+                            textAlign: TextAlign.left,
+                          ),
+                        ),
                       ],
                     )
                   ],
