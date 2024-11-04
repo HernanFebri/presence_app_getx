@@ -223,7 +223,9 @@ class PageIndexController extends GetxController {
       };
     }
 
-    Position position = await Geolocator.getCurrentPosition();
+    Position position = await Geolocator.getCurrentPosition(
+        // ignore: deprecated_member_use
+        desiredAccuracy: LocationAccuracy.high);
     return {
       "position": position,
       "message": "Berhasil mendapatkan posisi device",
