@@ -67,7 +67,8 @@ class AllPresensiView extends GetView<AllPresensiController> {
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
                                 Text(
-                                  "${DateFormat.yMMMEd().format(DateTime.parse(data['date']))}",
+                                  DateFormat.yMMMEd()
+                                      .format(DateTime.parse(data['date'])),
                                   style: const TextStyle(
                                       fontWeight: FontWeight.bold),
                                 ),
@@ -75,7 +76,8 @@ class AllPresensiView extends GetView<AllPresensiController> {
                             ),
                             Text(data['masuk']?['date'] == null
                                 ? "-"
-                                : "${DateFormat.jms().format(DateTime.parse(data['masuk']?['date']))}"),
+                                : DateFormat.jms().format(
+                                    DateTime.parse(data['masuk']?['date']))),
                             const SizedBox(
                               height: 10,
                             ),
@@ -85,7 +87,8 @@ class AllPresensiView extends GetView<AllPresensiController> {
                             ),
                             Text(data['keluar']?['date'] == null
                                 ? "-"
-                                : "${DateFormat.jms().format(DateTime.parse(data['keluar']?['date']))}"),
+                                : DateFormat.jms().format(
+                                    DateTime.parse(data['keluar']?['date']))),
                           ],
                         ),
                       ),

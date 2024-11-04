@@ -29,7 +29,8 @@ class DetailPresensiView extends GetView<DetailPresensiController> {
               children: [
                 Center(
                   child: Text(
-                    "${DateFormat.yMMMMEEEEd().format(DateTime.parse(data['date']))}",
+                    DateFormat.yMMMMEEEEd()
+                        .format(DateTime.parse(data['date'])),
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 18,

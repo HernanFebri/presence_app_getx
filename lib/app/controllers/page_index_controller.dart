@@ -79,7 +79,7 @@ class PageIndexController extends GetxController {
           actions: [
             OutlinedButton(
               onPressed: () => Get.back(),
-              child: Text("CANCEL"),
+              child: const Text("CANCEL"),
             ),
             ElevatedButton(
               onPressed: () async {
@@ -98,7 +98,7 @@ class PageIndexController extends GetxController {
                 Get.snackbar(
                     "Berhasil", "Kamu telah mengisi daftar hadir (MASUK)");
               },
-              child: Text("YES"),
+              child: const Text("YES"),
             )
           ]);
     } else {
@@ -122,7 +122,7 @@ class PageIndexController extends GetxController {
               actions: [
                 OutlinedButton(
                   onPressed: () => Get.back(),
-                  child: Text("CANCEL"),
+                  child: const Text("CANCEL"),
                 ),
                 ElevatedButton(
                   onPressed: () async {
@@ -140,7 +140,7 @@ class PageIndexController extends GetxController {
                     Get.snackbar(
                         "Berhasil", "Kamu telah mengisi daftar hadir (KELUAR)");
                   },
-                  child: Text("YES"),
+                  child: const Text("YES"),
                 )
               ]);
         }
@@ -153,7 +153,7 @@ class PageIndexController extends GetxController {
           actions: [
             OutlinedButton(
               onPressed: () => Get.back(),
-              child: Text("CANCEL"),
+              child: const Text("CANCEL"),
             ),
             ElevatedButton(
               onPressed: () async {
@@ -172,7 +172,7 @@ class PageIndexController extends GetxController {
                 Get.snackbar(
                     "Berhasil", "Kamu telah mengisi daftar hadir (MASUK)");
               },
-              child: Text("YES"),
+              child: const Text("YES"),
             )
           ],
         );

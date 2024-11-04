@@ -61,7 +61,7 @@ class ProfileView extends GetView<ProfileController> {
                   height: 20,
                 ),
                 Text(
-                  "${user["name"].toString().toUpperCase()}",
+                  user["name"].toString().toUpperCase(),
                   textAlign: TextAlign.center,
                   style: const TextStyle(fontSize: 20),
                 ),
