@@ -28,7 +28,6 @@ void main() async {
             ),
           );
         }
-        print(snapshot.data);
         return GetMaterialApp(
           debugShowCheckedModeBanner: false,
           theme: ThemeData(

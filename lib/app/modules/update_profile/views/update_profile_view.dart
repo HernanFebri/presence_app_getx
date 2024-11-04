@@ -97,12 +97,12 @@ class UpdateProfileView extends GetView<UpdateProfileController> {
                             onPressed: () {
                               controller.deleteProfile(user["uid"]);
                             },
-                            child: Text("delete"),
+                            child: const Text("delete"),
                           )
                         ],
                       );
                     } else {
-                      return Text("NO IMAGE");
+                      return const Text("NO IMAGE");
                     }
                   }
                 },

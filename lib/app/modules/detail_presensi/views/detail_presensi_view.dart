@@ -10,7 +10,6 @@ class DetailPresensiView extends GetView<DetailPresensiController> {
   DetailPresensiView({super.key});
   @override
   Widget build(BuildContext context) {
-    print(data);
     return Scaffold(
       appBar: AppBar(
         title: const Text('DETAIL PRESENSI'),
