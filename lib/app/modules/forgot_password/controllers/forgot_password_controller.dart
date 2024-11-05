@@ -8,20 +8,35 @@ class ForgotPasswordController extends GetxController {
 
   FirebaseAuth auth = FirebaseAuth.instance;
 
+  // Method untuk memvalidasi email
+  bool _isValidEmail(String email) {
+    final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+    return emailRegex.hasMatch(email);
+  }
+
   void sendEmail() async {
-    if (emailC.text.isNotEmpty) {
-      isLoading.value = true;
-      try {
-        await auth.sendPasswordResetEmail(email: emailC.text);
-        Get.snackbar("Berhasil",
-            "Kami telah mengirimkan email reset password. Periksa email anda.");
-        Get.back();
-      } catch (e) {
+    String email = emailC.text.trim();
+    if (email.isNotEmpty) {
+      if (_isValidEmail(email)) {
+        isLoading.value = true;
+        try {
+          await auth.sendPasswordResetEmail(email: email);
+          Get.snackbar("Berhasil",
+              "Kami telah mengirimkan email reset password. Periksa email anda.");
+          // Kosongkan isi TextField setelah berhasil
+          emailC.clear(); // Menghapus isi TextField
+        } catch (e) {
+          Get.snackbar("Terjadi Kesalahan",
+              "Tidak dapat mengirim email reset password.");
+        } finally {
+          isLoading.value = false;
+        }
+      } else {
         Get.snackbar(
-            "Terjadi Kesalahan", "Tidak dapat mengirim email reset password.");
-      } finally {
-        isLoading.value = false;
+            "Terjadi Kesalahan", "Silakan masukkan alamat email yang valid.");
       }
+    } else {
+      Get.snackbar("Terjadi Kesalahan", "Kolom email tidak boleh kosong.");
     }
   }
 }

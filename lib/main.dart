@@ -15,8 +15,13 @@ void main() async {
 
   final pageC = Get.put(PageIndexController(), permanent: true);
 
-  runApp(
-    StreamBuilder(
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<User?>(
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -28,16 +33,40 @@ void main() async {
             ),
           );
         }
-        return GetMaterialApp(
-          debugShowCheckedModeBanner: false,
-          theme: ThemeData(
-            useMaterial3: false,
-          ),
-          title: "Application",
-          initialRoute: snapshot.data != null ? Routes.HOME : Routes.LOGIN,
-          getPages: AppPages.routes,
-        );
+
+        // Check if the user is logged in and if their email is verified
+        if (snapshot.hasData) {
+          final user = FirebaseAuth.instance.currentUser;
+          if (user != null && user.emailVerified) {
+            // User is logged in and email is verified, proceed to home page
+            return GetMaterialApp(
+              debugShowCheckedModeBanner: false,
+              theme: ThemeData(useMaterial3: false),
+              title: "Application",
+              initialRoute: Routes.HOME,
+              getPages: AppPages.routes,
+            );
+          } else {
+            // User is logged in but email is not verified, go to login page
+            return GetMaterialApp(
+              debugShowCheckedModeBanner: false,
+              theme: ThemeData(useMaterial3: false),
+              title: "Application",
+              initialRoute: Routes.LOGIN,
+              getPages: AppPages.routes,
+            );
+          }
+        } else {
+          // User is not logged in, go to login page
+          return GetMaterialApp(
+            debugShowCheckedModeBanner: false,
+            theme: ThemeData(useMaterial3: false),
+            title: "Application",
+            initialRoute: Routes.LOGIN,
+            getPages: AppPages.routes,
+          );
+        }
       },
-    ),
-  );
+    );
+  }
 }
