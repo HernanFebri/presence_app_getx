@@ -38,14 +38,20 @@ class HomeView extends GetView<HomeController> {
                 Row(
                   children: [
                     ClipOval(
-                      child: Container(
+                      child: SizedBox(
                         width: 75,
                         height: 75,
-                        color: Colors.grey[200],
                         child: Image.network(
                           user["profile"] != null
-                              ? user["profile"]
+                              ? user["profile"] != ""
+                                  ? user["profile"]
+                                  : defaultImage
                               : defaultImage,
+                          errorBuilder: (context, error, stackTrace) {
+                            return CircleAvatar(
+                              child: Text("${user['name']}"),
+                            );
+                          },
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -96,7 +102,7 @@ class HomeView extends GetView<HomeController> {
                         ),
                       ),
                       const SizedBox(
-                        height: 20,
+                        height: 10,
                       ),
                       Text(
                         "${user["nip"]}",
@@ -127,44 +133,44 @@ class HomeView extends GetView<HomeController> {
                     color: Colors.grey[200],
                   ),
                   child: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-                      stream: controller.streamTodayPresence(),
-                      builder: (context, snapToday) {
-                        if (snapToday.connectionState ==
-                            ConnectionState.waiting) {
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        }
-
-                        Map<String, dynamic>? dataToday =
-                            snapToday.data?.data();
-                        return Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            Column(
-                              children: [
-                                const Text("Masuk"),
-                                Text(dataToday?["masuk"] == null
-                                    ? "-"
-                                    : "${DateFormat.jms().format(DateTime.parse(dataToday!['masuk']['date']))}"),
-                              ],
-                            ),
-                            Container(
-                              width: 2,
-                              height: 40,
-                              color: Colors.grey,
-                            ),
-                            Column(
-                              children: [
-                                const Text("Keluar"),
-                                Text(dataToday?["keluar"] == null
-                                    ? "-"
-                                    : "${DateFormat.jms().format(DateTime.parse(dataToday!['keluar']['date']))}"),
-                              ],
-                            )
-                          ],
+                    stream: controller.streamTodayPresence(),
+                    builder: (context, snapToday) {
+                      if (snapToday.connectionState ==
+                          ConnectionState.waiting) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
                         );
-                      }),
+                      }
+
+                      Map<String, dynamic>? dataToday = snapToday.data?.data();
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Column(
+                            children: [
+                              const Text("Masuk"),
+                              Text(dataToday?["masuk"] == null
+                                  ? "-"
+                                  : "${DateFormat.jms().format(DateTime.parse(dataToday!['masuk']['date']))}"),
+                            ],
+                          ),
+                          Container(
+                            width: 2,
+                            height: 40,
+                            color: Colors.grey,
+                          ),
+                          Column(
+                            children: [
+                              const Text("Keluar"),
+                              Text(dataToday?["keluar"] == null
+                                  ? "-"
+                                  : "${DateFormat.jms().format(DateTime.parse(dataToday!['keluar']['date']))}"),
+                            ],
+                          )
+                        ],
+                      );
+                    },
+                  ),
                 ),
                 const SizedBox(
                   height: 20,
