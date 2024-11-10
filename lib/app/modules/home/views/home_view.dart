@@ -3,7 +3,7 @@ import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:presence_app_getx/app/routes/app_pages.dart';
+import '../../../routes/app_pages.dart';
 
 import '../../../controllers/page_index_controller.dart';
 import '../controllers/home_controller.dart';
@@ -151,7 +151,8 @@ class HomeView extends GetView<HomeController> {
                               const Text("Masuk"),
                               Text(dataToday?["masuk"] == null
                                   ? "-"
-                                  : "${DateFormat.jms().format(DateTime.parse(dataToday!['masuk']['date']))}"),
+                                  : DateFormat.jms().format(DateTime.parse(
+                                      dataToday!['masuk']['date']))),
                             ],
                           ),
                           Container(
@@ -164,7 +165,8 @@ class HomeView extends GetView<HomeController> {
                               const Text("Keluar"),
                               Text(dataToday?["keluar"] == null
                                   ? "-"
-                                  : "${DateFormat.jms().format(DateTime.parse(dataToday!['keluar']['date']))}"),
+                                  : DateFormat.jms().format(DateTime.parse(
+                                      dataToday!['keluar']['date']))),
                             ],
                           )
                         ],
@@ -206,7 +208,7 @@ class HomeView extends GetView<HomeController> {
                         child: CircularProgressIndicator(),
                       );
                     }
-                    if (snapPresence.data?.docs.length == 0 ||
+                    if (snapPresence.data!.docs.isEmpty ||
                         snapPresence.data == null) {
                       return const SizedBox(
                         height: 100,
@@ -252,7 +254,8 @@ class HomeView extends GetView<HomeController> {
                                               fontWeight: FontWeight.bold),
                                         ),
                                         Text(
-                                          "${DateFormat.yMMMEd().format(DateTime.parse(data['date']))}",
+                                          DateFormat.yMMMEd().format(
+                                              DateTime.parse(data['date'])),
                                           style: const TextStyle(
                                               fontWeight: FontWeight.bold),
                                         ),
@@ -260,7 +263,9 @@ class HomeView extends GetView<HomeController> {
                                     ),
                                     Text(data['masuk']?['date'] == null
                                         ? "-"
-                                        : "${DateFormat.jms().format(DateTime.parse(data['masuk']?['date']))}"),
+                                        : DateFormat.jms().format(
+                                            DateTime.parse(
+                                                data['masuk']?['date']))),
                                     const SizedBox(
                                       height: 10,
                                     ),
@@ -271,7 +276,9 @@ class HomeView extends GetView<HomeController> {
                                     ),
                                     Text(data['keluar']?['date'] == null
                                         ? "-"
-                                        : "${DateFormat.jms().format(DateTime.parse(data['keluar']?['date']))}"),
+                                        : DateFormat.jms().format(
+                                            DateTime.parse(
+                                                data['keluar']?['date']))),
                                   ],
                                 ),
                               ),

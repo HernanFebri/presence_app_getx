@@ -23,7 +23,7 @@ class HomeController extends GetxController {
         .doc(uid)
         .collection("presence")
         .orderBy("date", descending: true)
-        .limitToLast(5)
+        .limit(5)
         .snapshots();
   }
 

@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:intl/intl.dart';
-import 'package:presence_app_getx/app/routes/app_pages.dart';
+import '../routes/app_pages.dart';
 
 class PageIndexController extends GetxController {
   RxInt pageIndex = 0.obs;
@@ -52,10 +52,10 @@ class PageIndexController extends GetxController {
 
   Future<void> presensi(
       Position position, String address, double distance) async {
-    String uid = await auth.currentUser!.uid;
+    String uid = auth.currentUser!.uid;
 
     CollectionReference<Map<String, dynamic>> colPresence =
-        await firestore.collection("pegawai").doc(uid).collection("presence");
+        firestore.collection("pegawai").doc(uid).collection("presence");
 
     QuerySnapshot<Map<String, dynamic>> snapPresence = await colPresence.get();
 
@@ -69,7 +69,7 @@ class PageIndexController extends GetxController {
       status = "Di Dalam Area";
     }
 
-    if (snapPresence.docs.length == 0) {
+    if (snapPresence.docs.isEmpty) {
       // belum pernah absen & set absen masuk pertama kalinya
 
       await Get.defaultDialog(
@@ -181,7 +181,7 @@ class PageIndexController extends GetxController {
   }
 
   Future<void> updatePosition(Position position, String address) async {
-    String uid = await auth.currentUser!.uid;
+    String uid = auth.currentUser!.uid;
 
     await firestore.collection("pegawai").doc(uid).update({
       "position": {

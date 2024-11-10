@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
@@ -26,7 +25,7 @@ class AllPresensiView extends GetView<AllPresensiController> {
                 child: CircularProgressIndicator(),
               );
             }
-            if (snap.data?.docs.length == 0 || snap.data == null) {
+            if (snap.data!.docs.isEmpty || snap.data == null) {
               return const SizedBox(
                 height: 100,
                 child: Center(

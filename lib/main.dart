@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:presence_app_getx/app/controllers/page_index_controller.dart';
+import 'app/controllers/page_index_controller.dart';
 
 import 'app/routes/app_pages.dart';
 import 'firebase_options.dart';
@@ -15,10 +15,12 @@ void main() async {
 
   final pageC = Get.put(PageIndexController(), permanent: true);
 
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<User?>(
