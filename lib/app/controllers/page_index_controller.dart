@@ -31,8 +31,6 @@ class PageIndexController extends GetxController {
 
           //PRESENSI
           await presensi(position, address, distance);
-
-          // Get.snackbar("Berhasil", "Kamu telah mengisi daftar hadir");
         } else {
           Get.snackbar("Terjadi Kesalahan", dataResponse["message"]);
         }
