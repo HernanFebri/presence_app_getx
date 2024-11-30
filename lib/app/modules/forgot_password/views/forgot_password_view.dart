@@ -8,17 +8,14 @@ class ForgotPasswordView extends GetView<ForgotPasswordController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: const Color(0xFF5A88E2),
       appBar: AppBar(
-        title: const Text('Forgot Password'),
-        centerTitle: true,
-        backgroundColor: Colors.transparent, // Transparan
-        elevation: 0, // Menghilangkan bayangan
+        backgroundColor: Colors.transparent,
+        elevation: 0,
         leading: Padding(
           padding: const EdgeInsets.all(12.0),
           child: IconButton(
-            icon: const Icon(Icons.arrow_back,
-                size: 32, color: Colors.blueAccent),
+            icon: const Icon(Icons.arrow_back, size: 32, color: Colors.white),
             onPressed: () {
               Get.back();
             },
@@ -26,78 +23,92 @@ class ForgotPasswordView extends GetView<ForgotPasswordController> {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // Icon or Logo
-            const Align(
-              alignment: Alignment.topCenter,
-              child: Icon(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Icon(
                 Icons.lock_reset,
-                size: 200,
-                color: Colors.blueAccent,
+                size: 150,
+                color: Colors.white,
               ),
-            ),
-            const SizedBox(height: 10),
-            // Title and Description
-            const Text(
-              'Forgot Your Password?',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.black87,
-              ),
-            ),
-            const SizedBox(height: 10),
-            const Text(
-              'Enter your email address below to receive password reset instructions.',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.grey,
-              ),
-            ),
-            const SizedBox(height: 30),
-            // Email TextField
-            TextField(
-              controller: controller.emailC,
-              keyboardType: TextInputType.emailAddress,
-              decoration: const InputDecoration(
-                labelText: "Email Address",
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.email_outlined),
-              ),
-            ),
-            const SizedBox(height: 20),
-            // Send Button with Loading Indicator
-            Obx(
-              () => ElevatedButton(
-                onPressed: () {
-                  if (controller.isLoading.isFalse) {
-                    controller.sendEmail();
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blueAccent,
-                  padding: const EdgeInsets.symmetric(vertical: 15),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
+              const SizedBox(height: 20),
+              const Text(
+                'Forgot Your Password?',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
                 ),
-                child: controller.isLoading.isFalse
-                    ? const Text(
-                        "SEND RESET PASSWORD",
-                        style: TextStyle(fontSize: 16, color: Colors.white),
-                      )
-                    : const CircularProgressIndicator(
-                        color: Colors.white,
-                      ),
               ),
-            ),
-          ],
+              const SizedBox(height: 8),
+              const Text(
+                'Enter your email address below to receive password reset instructions.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.white70,
+                ),
+              ),
+              const SizedBox(height: 40),
+              Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 10,
+                      offset: const Offset(0, 5),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    TextField(
+                      controller: controller.emailC,
+                      keyboardType: TextInputType.emailAddress,
+                      decoration: const InputDecoration(
+                        labelText: "Email Address",
+                        border: OutlineInputBorder(),
+                        prefixIcon: Icon(Icons.email_outlined),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Obx(
+                      () => ElevatedButton(
+                        onPressed: () {
+                          if (controller.isLoading.isFalse) {
+                            controller.sendEmail();
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: const Size.fromHeight(50),
+                          backgroundColor: const Color(0xFF5A88E2),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        child: controller.isLoading.isFalse
+                            ? const Text(
+                                "Send Reset Password",
+                                style: TextStyle(
+                                    fontSize: 16, color: Colors.white),
+                              )
+                            : const CircularProgressIndicator(
+                                color: Colors.white,
+                              ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

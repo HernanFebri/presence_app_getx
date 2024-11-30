@@ -64,7 +64,7 @@ class MyApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             theme: ThemeData(useMaterial3: false),
             title: "Application",
-            initialRoute: Routes.LOGIN,
+            initialRoute: Routes.SPLASH,
             getPages: AppPages.routes,
           );
         }
