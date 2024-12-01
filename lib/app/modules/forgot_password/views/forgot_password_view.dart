@@ -97,7 +97,7 @@ class ForgotPasswordView extends GetView<ForgotPasswordController> {
                             ? const Text(
                                 "Send Reset Password",
                                 style: TextStyle(
-                                    fontSize: 16, color: Colors.white),
+                                    fontSize: 18, color: Colors.white),
                               )
                             : const CircularProgressIndicator(
                                 color: Colors.white,

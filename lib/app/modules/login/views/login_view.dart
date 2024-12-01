@@ -117,7 +117,8 @@ class LoginView extends GetView<LoginController> {
                         child: controller.isLoading.isFalse
                             ? const Text(
                                 "Login",
-                                style: TextStyle(fontSize: 18),
+                                style: TextStyle(
+                                    fontSize: 18, color: Colors.white),
                               )
                             : const CircularProgressIndicator(
                                 color: Colors.white,

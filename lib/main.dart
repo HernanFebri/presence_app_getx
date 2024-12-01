@@ -13,7 +13,7 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  final pageC = Get.put(PageIndexController(), permanent: true);
+  final PageIndexController() = Get.put(PageIndexController(), permanent: true);
 
   runApp(const MyApp());
 }

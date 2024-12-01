@@ -3,8 +3,8 @@ import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import '../../../routes/app_pages.dart';
 
+import '../../../routes/app_pages.dart';
 import '../../../controllers/page_index_controller.dart';
 import '../controllers/home_controller.dart';
 
@@ -12,134 +12,187 @@ class HomeView extends GetView<HomeController> {
   final pageC = Get.find<PageIndexController>();
 
   HomeView({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('HOME'),
-        centerTitle: true,
-      ),
-      body: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-        stream: controller.streamUser(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-          if (snapshot.hasData) {
-            Map<String, dynamic> user = snapshot.data!.data()!;
-            String defaultImage =
-                "https://ui-avatars.com/api/?name=${user['name']}";
+        elevation: 0,
+        backgroundColor: Colors.blueAccent,
+        title: Row(
+          children: [
+            // Profile Avatar
+            ClipOval(
+              child: SizedBox(
+                width: 50,
+                height: 50,
+                child: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+                  stream: controller.streamUser(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const CircularProgressIndicator();
+                    }
 
-            return ListView(
-              padding: const EdgeInsets.all(20),
-              children: [
-                Row(
-                  children: [
-                    ClipOval(
-                      child: SizedBox(
-                        width: 75,
-                        height: 75,
-                        child: Image.network(
-                          user["profile"] != null
-                              ? user["profile"] != ""
-                                  ? user["profile"]
-                                  : defaultImage
-                              : defaultImage,
-                          errorBuilder: (context, error, stackTrace) {
-                            return CircleAvatar(
-                              child: Text("${user['name']}"),
-                            );
-                          },
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          "Welcome,",
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        SizedBox(
-                          width: 200,
-                          child: Text(
-                            user["address"] != null
-                                ? "${user["address"]}"
-                                : "Belum ada lokasi.",
-                            textAlign: TextAlign.left,
-                          ),
-                        ),
-                      ],
-                    )
-                  ],
+                    String defaultImage =
+                        "https://ui-avatars.com/api/?name=User";
+
+                    if (snapshot.hasData) {
+                      Map<String, dynamic> user = snapshot.data!.data()!;
+                      return Image.network(
+                        user["profile"] != null
+                            ? user["profile"]
+                            : defaultImage,
+                        errorBuilder: (context, error, stackTrace) {
+                          return CircleAvatar(
+                            child: Text("${user['name'][0]}"),
+                          );
+                        },
+                        fit: BoxFit.cover,
+                      );
+                    }
+                    return CircleAvatar();
+                  },
                 ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    color: Colors.grey[200],
-                  ),
-                  child: Column(
+              ),
+            ),
+            const SizedBox(width: 15),
+            // Name, NIP, Job
+            StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+              stream: controller.streamUser(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator();
+                }
+
+                if (snapshot.hasData) {
+                  Map<String, dynamic> user = snapshot.data!.data()!;
+                  return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "${user["job"]}",
+                        user["name"] ?? "No Name",
                         style: const TextStyle(
-                          fontSize: 20,
+                          fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Text(
-                        "${user["nip"]}",
-                        style: const TextStyle(
-                          fontSize: 30,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Text(
-                        "${user["name"]}",
-                        style: const TextStyle(
-                          fontSize: 18,
-                        ),
-                      ),
+                      Text("${user['nip']} - ${user['job']}",
+                          style: const TextStyle(
+                            fontSize: 14,
+                          )),
                     ],
-                  ),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
+                  );
+                }
+                return const SizedBox.shrink();
+              },
+            ),
+          ],
+        ),
+      ),
+      body: Stack(
+        children: [
+          // Background Curve
+          CustomPaint(
+            size: MediaQuery.of(context).size,
+            painter: CurvePainter(),
+          ),
+          // Content
+          SingleChildScrollView(
+            // Membungkus keseluruhan dengan SingleChildScrollView
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              children: [
+                // Welcome Card
                 Container(
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    color: Colors.grey[200],
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(15),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+                    stream: controller.streamUser(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const CircularProgressIndicator();
+                      }
+                      if (snapshot.hasData) {
+                        Map<String, dynamic> user = snapshot.data!.data()!;
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            const Text(
+                              "Welcome",
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.blueAccent,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            Text(
+                              DateFormat('hh:mm a').format(DateTime.now()),
+                              style: const TextStyle(
+                                fontSize: 36,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                            ),
+                            const SizedBox(height: 5),
+                            Text(
+                              DateFormat('EEEE, d MMMM yyyy')
+                                  .format(DateTime.now()),
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: Colors.black54,
+                              ),
+                            ),
+                            const SizedBox(height: 15),
+                            Text(
+                              user["address"] != null
+                                  ? "${user["address"]}"
+                                  : "Belum ada lokasi.",
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.black87,
+                              ),
+                            ),
+                          ],
+                        );
+                      }
+                      return const SizedBox.shrink();
+                    },
+                  ),
+                ),
+                const SizedBox(height: 20),
+                // Today's Presence
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(15),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
                   ),
                   child: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
                     stream: controller.streamTodayPresence(),
                     builder: (context, snapToday) {
                       if (snapToday.connectionState ==
                           ConnectionState.waiting) {
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
+                        return const Center(child: CircularProgressIndicator());
                       }
 
                       Map<String, dynamic>? dataToday = snapToday.data?.data();
@@ -174,9 +227,8 @@ class HomeView extends GetView<HomeController> {
                     },
                   ),
                 ),
-                const SizedBox(
-                  height: 20,
-                ),
+                const SizedBox(height: 20),
+                // Divider and Last 5 Days Section
                 Divider(
                   color: Colors.grey[300],
                   thickness: 2,
@@ -199,107 +251,104 @@ class HomeView extends GetView<HomeController> {
                   ],
                 ),
                 const SizedBox(height: 10),
-                StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                  stream: controller.streamLastPresence(),
-                  builder: (context, snapPresence) {
-                    if (snapPresence.connectionState ==
-                        ConnectionState.waiting) {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
-                    if (snapPresence.data!.docs.isEmpty ||
-                        snapPresence.data == null) {
-                      return const SizedBox(
-                        height: 100,
-                        child: Center(
-                          child: Text("Belum ada history presensi."),
-                        ),
-                      );
-                    }
-                    return ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: snapPresence.data!.docs.length,
-                      itemBuilder: (context, index) {
-                        Map<String, dynamic> data =
-                            snapPresence.data!.docs[index].data();
-
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 20),
-                          child: Material(
-                            borderRadius: BorderRadius.circular(20),
-                            color: Colors.grey[200],
-                            child: InkWell(
-                              onTap: () => Get.toNamed(
-                                Routes.DETAIL_PRESENSI,
-                                arguments: data,
-                              ),
+                // Last 5 Days (scrollable)
+                Container(
+                  height: 300, // Specify the height of the scrollable section
+                  child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                    stream: controller.streamLastPresence(),
+                    builder: (context, snapPresence) {
+                      if (snapPresence.connectionState ==
+                          ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      if (snapPresence.data!.docs.isEmpty ||
+                          snapPresence.data == null) {
+                        return const SizedBox(
+                          height: 100,
+                          child: Center(
+                            child: Text("Belum ada history presensi."),
+                          ),
+                        );
+                      }
+                      return ListView.builder(
+                        shrinkWrap: true,
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        itemCount: snapPresence.data!.docs.length,
+                        itemBuilder: (context, index) {
+                          Map<String, dynamic> data =
+                              snapPresence.data!.docs[index].data();
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 20),
+                            child: Material(
                               borderRadius: BorderRadius.circular(20),
-                              child: Container(
-                                padding: const EdgeInsets.all(20),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
+                              color: Colors.grey[200],
+                              child: InkWell(
+                                onTap: () => Get.toNamed(
+                                  Routes.DETAIL_PRESENSI,
+                                  arguments: data,
                                 ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        const Text(
-                                          "Masuk",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                        Text(
-                                          DateFormat.yMMMEd().format(
-                                              DateTime.parse(data['date'])),
-                                          style: const TextStyle(
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ],
-                                    ),
-                                    Text(data['masuk']?['date'] == null
-                                        ? "-"
-                                        : DateFormat.jms().format(
-                                            DateTime.parse(
-                                                data['masuk']?['date']))),
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    const Text(
-                                      "Keluar",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    Text(data['keluar']?['date'] == null
-                                        ? "-"
-                                        : DateFormat.jms().format(
-                                            DateTime.parse(
-                                                data['keluar']?['date']))),
-                                  ],
+                                borderRadius: BorderRadius.circular(20),
+                                child: Container(
+                                  padding: const EdgeInsets.all(20),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          const Text(
+                                            "Masuk",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          Text(
+                                            DateFormat.yMMMEd().format(
+                                                DateTime.parse(data['date'])),
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ],
+                                      ),
+                                      Text(data['masuk']?['date'] == null
+                                          ? "-"
+                                          : DateFormat.jms().format(
+                                              DateTime.parse(
+                                                  data['masuk']?['date']))),
+                                      const SizedBox(height: 10),
+                                      const Text(
+                                        "Keluar",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      Text(data['keluar']?['date'] == null
+                                          ? "-"
+                                          : DateFormat.jms().format(
+                                              DateTime.parse(
+                                                  data['keluar']?['date']))),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        );
-                      },
-                    );
-                  },
-                )
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ),
               ],
-            );
-          } else {
-            return const Center(
-              child: Text("Tidak dapat memuat database user."),
-            );
-          }
-        },
+            ),
+          ),
+        ],
       ),
       bottomNavigationBar: ConvexAppBar(
         style: TabStyle.fixedCircle,
+        backgroundColor: Colors.blueAccent,
         items: const [
           TabItem(icon: Icons.home, title: 'Home'),
           TabItem(icon: Icons.fingerprint, title: 'Add'),
@@ -310,4 +359,27 @@ class HomeView extends GetView<HomeController> {
       ),
     );
   }
+}
+
+// CustomPainter for the Curve Background
+class CurvePainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint paint = Paint();
+    paint.color = Colors.blueAccent;
+    paint.style = PaintingStyle.fill;
+
+    Path path = Path();
+    path.moveTo(0, size.height * 0.3);
+    path.quadraticBezierTo(
+        size.width * 0.5, size.height * 0.4, size.width, size.height * 0.3);
+    path.lineTo(size.width, 0);
+    path.lineTo(0, 0);
+    path.close();
+
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => false;
 }

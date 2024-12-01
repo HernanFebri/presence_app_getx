@@ -5,6 +5,7 @@ import '../controllers/splash_controller.dart';
 class SplashView extends GetView<SplashController> {
   SplashView({super.key});
 
+  @override
   final SplashController controller = Get.put(SplashController());
 
   @override
